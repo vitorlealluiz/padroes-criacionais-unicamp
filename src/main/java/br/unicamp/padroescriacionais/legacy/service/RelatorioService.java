@@ -12,12 +12,7 @@ import java.time.LocalDateTime;
 
 public class RelatorioService {
 
-    private ConfiguracaoSistema configuracao = new ConfiguracaoSistema(
-            "Empresa XPTO",
-            "DEV",
-            "/tmp/relatorios",
-            false
-    );
+    private ConfiguracaoSistema configuracao = ConfiguracaoSistema.getInstance();
 
     public Relatorio criarRelatorio(TipoRelatorio tipo) {
         String titulo;
@@ -50,18 +45,8 @@ public class RelatorioService {
             System.out.println("[DEBUG-RelatorioService] Gerando: " + tipo + " -> " + formato);
         }
 
-        if (formato == FormatoRelatorio.PDF) {
-            PdfRelatorioGenerator generator = new PdfRelatorioGenerator();
-            return generator.gerar(relatorio);
-        } else if (formato == FormatoRelatorio.CSV) {
-            CsvRelatorioGenerator generator = new CsvRelatorioGenerator();
-            return generator.gerar(relatorio);
-        } else if (formato == FormatoRelatorio.JSON) {
-            JsonRelatorioGenerator generator = new JsonRelatorioGenerator();
-            return generator.gerar(relatorio);
-        } else {
-            throw new IllegalArgumentException("Formato desconhecido: " + formato);
-        }
+        RelatorioGenerator generator = RelatorioGeneratorFactory.criarGerador(formato);
+        return generator.gerar(relatorio);
     }
 
     private String gerarConteudoVendas() {
