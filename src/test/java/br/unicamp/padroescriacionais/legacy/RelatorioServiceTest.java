@@ -20,20 +20,27 @@ class RelatorioServiceTest {
 
     @Test
     void deveCriarRelatorioDeVendas() {
-        Relatorio relatorio = service.criarRelatorio(TipoRelatorio.VENDAS);
+
+        Relatorio relatorio =
+                service.criarRelatorio(TipoRelatorio.VENDAS);
 
         assertNotNull(relatorio);
         assertEquals(TipoRelatorio.VENDAS, relatorio.getTipo());
+
         assertNotNull(relatorio.getTitulo());
         assertFalse(relatorio.getTitulo().isBlank());
+
         assertNotNull(relatorio.getConteudo());
         assertFalse(relatorio.getConteudo().isBlank());
+
         assertNotNull(relatorio.getDataGeracao());
     }
 
     @Test
     void deveCriarRelatorioDeEstoque() {
-        Relatorio relatorio = service.criarRelatorio(TipoRelatorio.ESTOQUE);
+
+        Relatorio relatorio =
+                service.criarRelatorio(TipoRelatorio.ESTOQUE);
 
         assertNotNull(relatorio);
         assertEquals(TipoRelatorio.ESTOQUE, relatorio.getTipo());
@@ -42,7 +49,9 @@ class RelatorioServiceTest {
 
     @Test
     void deveCriarRelatorioDeClientes() {
-        Relatorio relatorio = service.criarRelatorio(TipoRelatorio.CLIENTES);
+
+        Relatorio relatorio =
+                service.criarRelatorio(TipoRelatorio.CLIENTES);
 
         assertNotNull(relatorio);
         assertEquals(TipoRelatorio.CLIENTES, relatorio.getTipo());
@@ -51,54 +60,131 @@ class RelatorioServiceTest {
 
     @Test
     void todosTiposDevemProduizirRelatorioValido() {
+
         for (TipoRelatorio tipo : TipoRelatorio.values()) {
+
             Relatorio relatorio = service.criarRelatorio(tipo);
-            assertNotNull(relatorio, "Relatorio nulo para tipo: " + tipo);
-            assertFalse(relatorio.getTitulo().isBlank(), "Titulo vazio para tipo: " + tipo);
-            assertFalse(relatorio.getConteudo().isBlank(), "Conteudo vazio para tipo: " + tipo);
+
+            assertNotNull(relatorio);
+
+            assertFalse(relatorio.getTitulo().isBlank());
+
+            assertFalse(relatorio.getConteudo().isBlank());
         }
     }
 
     @Test
     void deveGerarConteudoPdfNaoVazio() {
-        String resultado = service.gerarRelatorio(TipoRelatorio.VENDAS, FormatoRelatorio.PDF);
+
+        String resultado =
+                service.gerarRelatorio(
+                        TipoRelatorio.VENDAS,
+                        FormatoRelatorio.PDF
+                );
 
         assertNotNull(resultado);
+
         assertFalse(resultado.isBlank());
-        assertTrue(resultado.contains("PDF"), "Saida PDF deve conter a palavra PDF");
+
+        assertTrue(resultado.contains("PDF"));
     }
 
     @Test
     void deveGerarConteudoCsvComVirgulas() {
-        String resultado = service.gerarRelatorio(TipoRelatorio.ESTOQUE, FormatoRelatorio.CSV);
+
+        String resultado =
+                service.gerarRelatorio(
+                        TipoRelatorio.ESTOQUE,
+                        FormatoRelatorio.CSV
+                );
 
         assertNotNull(resultado);
+
         assertFalse(resultado.isBlank());
-        assertTrue(resultado.contains(","), "Saida CSV deve conter virgulas");
+
+        assertTrue(resultado.contains(","));
     }
 
     @Test
     void deveGerarConteudoJsonComChaves() {
-        String resultado = service.gerarRelatorio(TipoRelatorio.CLIENTES, FormatoRelatorio.JSON);
+
+        String resultado =
+                service.gerarRelatorio(
+                        TipoRelatorio.CLIENTES,
+                        FormatoRelatorio.JSON
+                );
 
         assertNotNull(resultado);
+
         assertFalse(resultado.isBlank());
-        assertTrue(resultado.contains("{"), "Saida JSON deve conter '{'");
-        assertTrue(resultado.contains("}"), "Saida JSON deve conter '}'");
+
+        assertTrue(resultado.contains("{"));
+
+        assertTrue(resultado.contains("}"));
+    }
+
+    @Test
+    void deveGerarConteudoXmlValido() {
+
+        String resultado =
+                service.gerarRelatorio(
+                        TipoRelatorio.VENDAS,
+                        FormatoRelatorio.XML
+                );
+
+        assertNotNull(resultado);
+
+        assertFalse(resultado.isBlank());
+
+        assertTrue(resultado.contains("<relatorio>"));
+
+        assertTrue(resultado.contains("</relatorio>"));
+    }
+
+    @Test
+    void deveGerarConteudoHtmlValido() {
+
+        String resultado =
+                service.gerarRelatorio(
+                        TipoRelatorio.VENDAS,
+                        FormatoRelatorio.HTML
+                );
+
+        assertNotNull(resultado);
+
+        assertFalse(resultado.isBlank());
+
+        assertTrue(resultado.contains("<html>"));
+
+        assertTrue(resultado.contains("</html>"));
     }
 
     @Test
     void todosFormatosDevemProduizirConteudoValido() {
+
         for (FormatoRelatorio formato : FormatoRelatorio.values()) {
-            String resultado = service.gerarRelatorio(TipoRelatorio.VENDAS, formato);
-            assertNotNull(resultado, "Resultado nulo para formato: " + formato);
-            assertFalse(resultado.isBlank(), "Resultado vazio para formato: " + formato);
+
+            String resultado =
+                    service.gerarRelatorio(
+                            TipoRelatorio.VENDAS,
+                            formato
+                    );
+
+            assertNotNull(resultado);
+
+            assertFalse(resultado.isBlank());
         }
     }
 
     @Test
     void conteudoDeveConterTituloDoRelatorio() {
-        String resultado = service.gerarRelatorio(TipoRelatorio.VENDAS, FormatoRelatorio.PDF);
-        assertTrue(resultado.contains("Vendas"), "Saida PDF deve mencionar o titulo do relatorio");
+
+        String resultado =
+                service.gerarRelatorio(
+                        TipoRelatorio.VENDAS,
+                        FormatoRelatorio.PDF
+                );
+
+        assertTrue(resultado.contains("Vendas"));
     }
 }

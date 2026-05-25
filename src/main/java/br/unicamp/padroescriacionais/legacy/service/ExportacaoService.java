@@ -3,30 +3,53 @@ package br.unicamp.padroescriacionais.legacy.service;
 import br.unicamp.padroescriacionais.legacy.domain.ConfiguracaoSistema;
 import br.unicamp.padroescriacionais.legacy.domain.FormatoRelatorio;
 import br.unicamp.padroescriacionais.legacy.domain.Relatorio;
-import br.unicamp.padroescriacionais.legacy.generator.CsvRelatorioGenerator;
-import br.unicamp.padroescriacionais.legacy.generator.JsonRelatorioGenerator;
-import br.unicamp.padroescriacionais.legacy.generator.PdfRelatorioGenerator;
+import br.unicamp.padroescriacionais.legacy.generator.RelatorioGeneratorFactory;
+import br.unicamp.padroescriacionais.legacy.generator.RelatorioGenerator;
 
 public class ExportacaoService {
 
-    private ConfiguracaoSistema configuracao = ConfiguracaoSistema.getInstance();
+    private ConfiguracaoSistema configuracao =
+            ConfiguracaoSistema.getInstance();
 
-    public void exportar(Relatorio relatorio, FormatoRelatorio formato) {
-        
-        RelatorioGenerator generator = RelatorioGeneratorFactory.criarGerador(formato);
-        String conteudoFormatado = generator.gerar(relatorio);
+    public void exportar(
+            Relatorio relatorio,
+            FormatoRelatorio formato
+    ) {
 
-        String nomeArquivo = relatorio.getTitulo()
-                .replace(" ", "_")
-                .toLowerCase()
-                + "." + formato.name().toLowerCase();
+        RelatorioGenerator generator =
+                RelatorioGeneratorFactory.criarGerador(formato);
 
-        String caminhoCompleto = configuracao.getDiretorioExportacao() + "/" + nomeArquivo;
+        String conteudoFormatado =
+                generator.gerar(relatorio);
 
-        System.out.println("[EXPORTACAO] Empresa  : " + configuracao.getNomeEmpresa());
-        System.out.println("[EXPORTACAO] Ambiente : " + configuracao.getAmbiente());
-        System.out.println("[EXPORTACAO] Arquivo  : " + caminhoCompleto);
+        String nomeArquivo =
+                relatorio.getTitulo()
+                        .replace(" ", "_")
+                        .toLowerCase()
+                        + "." + formato.name().toLowerCase();
+
+        String caminhoCompleto =
+                configuracao.getDiretorioExportacao()
+                        + "/"
+                        + nomeArquivo;
+
+        System.out.println(
+                "[EXPORTACAO] Empresa  : "
+                        + configuracao.getNomeEmpresa()
+        );
+
+        System.out.println(
+                "[EXPORTACAO] Ambiente : "
+                        + configuracao.getAmbiente()
+        );
+
+        System.out.println(
+                "[EXPORTACAO] Arquivo  : "
+                        + caminhoCompleto
+        );
+
         System.out.println("[EXPORTACAO] Conteudo :");
+
         System.out.println(conteudoFormatado);
     }
 }
